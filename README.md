@@ -1,14 +1,6 @@
-# godslisp
+This is a Clojure program that shows a little bit how to use the language. It is 
+mostly for those who want to solidify their knowledge of the language
+when they are stuck on what to use the language to work.
 
-A Clojure library designed to ... well, that part is up to you.
 
-## Usage
-
-FIXME
-
-## License
-
-Copyright © 2015 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+The source code is core.clj is well documented. 
