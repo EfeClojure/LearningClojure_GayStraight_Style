@@ -121,6 +121,8 @@
 (def cat-image (ImageIO/read (io/resource "Cat.jpg")))
 (def models-images (get-models-images))
 
+;;; This is how you get the dimensions of your laptop's monitor.
+;;; We need this so that we can center our app's window.
 (def SCREEN_SIZE (.getScreenSize (Toolkit/getDefaultToolkit)))
 (def SCREEN_WIDTH (.width SCREEN_SIZE))
 (def SCREEN_HEIGHT (.height SCREEN_SIZE))
@@ -165,7 +167,7 @@
 ;;; the content pane things
 
 (declare init-content-pane get-done-button-listener 
-         get-retry-button-listener draw-models 
+         get-retry-button-listener draw-models-in-full 
          all-asses-selected gay-straight-for-male)
 (def combo-boxes (make-array JComboBox 3))
 
@@ -206,17 +208,18 @@
   (proxy [JPanel] []
     (paintComponent [^Graphics graphics]
       (proxy-super paintComponent graphics)
-      (if @reveal-full-images
-        (draw-models graphics)
+      (draw-models-in-full graphics)
+      
+      (if (not @reveal-full-images) 
         (do 
-          (draw-models graphics)
+          ;;;This will hide the faces and the legs of the models
           (doto graphics
             (.setColor (Color. (.getRGB (first models-images) 2 5)))
             (.fillRect 0 0 APP_WIDTH (- (/ APP_HEIGHT 2) 80))
             (.fillRect 0 (- (/ APP_HEIGHT 2) 5) APP_WIDTH 
               (- APP_HEIGHT (/ APP_HEIGHT 2) 5))))))))
 
-(defn draw-models [graphics]
+(defn draw-models-in-full [graphics]
   (doto graphics
     (.setColor (Color. (.getRGB (first models-images) 2 5)))
     (.fillRect 0 0 APP_WIDTH APP_HEIGHT)
@@ -229,7 +232,7 @@
 
 ;;; This is the action listener for the 'Done' button
 ;;; We need this if we want the 'Done' button to do
-;;; anything once it is clicked
+;;; anything once it is clicked.
 (defn get-done-button-listener [content-pane]
   (proxy [ActionListener] []
     (actionPerformed [evt]
@@ -272,7 +275,7 @@
         (> @gay-count @straight-count)
         (JOptionPane/showMessageDialog nil "You are so gay")
         (> @straight-count @gay-count)
-        (JOptionPane/showMessageDialog nil "You are straight")) )
+        (JOptionPane/showMessageDialog nil "You are straight but I still have my doubts.")) )
 
 
 ;;; I don't want to duplicate logic so I perform the logic
@@ -373,21 +376,22 @@
         (doto graphics
           (.setColor (Color/red))
           (.setFont splash-text-font)
-          (.drawString "GODS" 350 20)
-          (.drawString "Many strange things," 20 50)
-          #_(.drawString "One thing is certain . . . " 20 80)
-          (.drawString "Gay or Straight" 20 110))))))
+          #_(.drawString "GODS" 330 20)
+          (.drawString "Many strange things," 10 50)
+          (.drawString "Welcome to an exciting time to learn Clojure." 10 80)
+          (.drawString "Gay or Straight Style" 10 110))))))
 
 
 ;;; Where all the magic begins
 (defn -main []
   (let [splash-screen (JWindow.)
-        j 400 k 130
+        splash-width 430 splash-height 130
         window-title (set-gender-get-title)
         the-jframe (get-j-frame)]
     (doto splash-screen
       (.setContentPane (get-splash-holder))
-      (.setBounds (/ (- SCREEN_WIDTH j) 2) (/ (- SCREEN_HEIGHT k) 2) j k)
+      (.setBounds (/ (- SCREEN_WIDTH splash-width) 2) 
+        (/ (- SCREEN_HEIGHT splash-height) 2) splash-width splash-height)
       (.setVisible true))
     (Thread/sleep 7000)
     (.dispose splash-screen)
