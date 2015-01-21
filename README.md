@@ -3,4 +3,4 @@ mostly for those who want to solidify their knowledge of the language
 when they are stuck on what to use the language to work.
 
 
-The source code is core.clj is well documented. 
+The source code is in src/core.clj. It is well documented. 
