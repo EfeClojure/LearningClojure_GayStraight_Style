@@ -55,22 +55,27 @@
 ;;; This function isn't written in the best way but
 ;;; since we are working with just 3 randoms it is just
 ;;; fine.
-(defn get-randoms 
-  ([upper-limit]
-    (get-randoms upper-limit [0 0 0]))
-  ([upper-limit so-far]
-    (if (or (== (so-far 0) (so-far 1))
-            (== (so-far 1) (so-far 2))
-            (== (so-far 0) (so-far 2)))
-      (recur upper-limit [(rand-int upper-limit) 
+#_(defn get-randoms 
+   ([upper-limit]
+     (get-randoms upper-limit [0 0 0]))
+   ([upper-limit so-far]
+     (if (or (== (so-far 0) (so-far 1))
+             (== (so-far 1) (so-far 2))
+             (== (so-far 0) (so-far 2)))
+       (recur upper-limit [(rand-int upper-limit) 
                          (rand-int upper-limit)
                          (rand-int upper-limit)])
-      so-far)))
+       so-far)))
+
+;;;This is much better.
+(defn get-randoms [upper-limit num-rands]
+  (vec (take num-rands 
+             (shuffle (range 0 upper-limit)))))
 
 
 ;;; Three asses will be displayed to the user. We don't want the
-;;; asses to all be the same. 
-(def rand-image-indices (atom (get-randoms 7))) 
+;;; asses to all be the same. We want 3 random asses out of 7
+(def rand-image-indices (atom (get-randoms 3 7))) 
 
 ;;; This is the number of images of models we 
 ;;; got in our 'resources' folder
@@ -317,8 +322,7 @@
   (proxy [ActionListener] []
     (actionPerformed [evt]
       (reset! reveal-full-images false)
-      (reset! rand-image-indices [(rand-int 7) 
-                                  (rand-int 7) (rand-int 7)])
+      (reset! rand-image-indices (get-randoms 3 7))
       (.repaint content-pane))))
 
 
